@@ -11,6 +11,8 @@ const App = () => {
     const storedNotes = localStorage.getItem("notes");
     return storedNotes ? JSON.parse(storedNotes) : [];
   });
+  const [searchInput, setSearchInput] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");// for search data storage
 
 
   useEffect(() => {
@@ -24,7 +26,11 @@ const App = () => {
       <nav className='flex h-15 justify-between items-center text-lg p-2 '>
         <div className='flex justify-between space-x-2 md:space-x-9'>
           <h3 className='text-xl font-sans'>SoftNotes</h3>
-          <SearchBar />
+          <SearchBar
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            onSearch={() => setSearchQuery(searchInput)}
+          />
         </div>
         <a href="#"><RxAvatar /></a>
       </nav>
@@ -38,14 +44,15 @@ const App = () => {
         <div className='md:flex-1  w-full  p-4 '>
           <p className='text-3xl font-sans font-semibold'>Notes!</p>
           <div className='grid grid-cols-3 gap-4'>
-            {notes.map(note => (
-              <CreateNoteCard
-                key={note.id}
-                color={note.color}
-                note={note}
-                setNotes={setNotes}
-              />
-            ))}
+            {notes.filter(note =>
+              note.content?.toLowerCase().includes(searchQuery.toLowerCase())).map(note => (
+                <CreateNoteCard
+                  key={note.id}
+                  color={note.color}
+                  note={note}
+                  setNotes={setNotes}
+                />
+              ))}
           </div>
         </div>
       </section>
