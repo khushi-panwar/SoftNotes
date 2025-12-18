@@ -44,8 +44,16 @@ const App = () => {
         <div className='md:flex-1  w-full  p-4 '>
           <p className='text-3xl font-sans font-semibold'>Notes!</p>
           <div className='grid grid-cols-3 gap-4'>
-            {notes.filter(note =>
-              note.content?.toLowerCase().includes(searchQuery.toLowerCase())).map(note => (
+            {[...notes]
+              .sort((a, b) => {
+                const aMatch = a.content?.toLowerCase().includes(searchQuery.toLowerCase());
+                const bMatch = b.content?.toLowerCase().includes(searchQuery.toLowerCase());
+
+                if (aMatch && !bMatch) return -1; // a goes first
+                if (!aMatch && bMatch) return 1;  // b goes first
+                return 0; // keep original order
+              })
+              .map(note => (
                 <CreateNoteCard
                   key={note.id}
                   color={note.color}
